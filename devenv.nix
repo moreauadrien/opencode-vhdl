@@ -679,7 +679,7 @@ end architecture sim;
 # Output files generated:
 # - src/<module_name>.vhd      - Main entity and architecture
 # - src/<module_name>_pkg.vhd  - Package with types/constants
-# - tb/<module_name>_tb.vhd    - Testbench
+# - sim/<module_name>_tb.vhd    - Testbench
 ```
 
 ### 3. Validate Code
@@ -687,7 +687,7 @@ end architecture sim;
 ```bash
 # Analyze with GHDL
 ghdl -a --std=08 src/module.vhd
-ghdl -a --std=08 tb/module_tb.vhd
+ghdl -a --std=08 sim/module_tb.vhd
 
 # Run simulation
 ghdl -e --std=08 module_tb
