@@ -197,7 +197,7 @@ Prefer single-file or single-test runs during iteration. Full suites are for the
 
 ### Layout
 - Source lives in: `src/` or `<module>/rtl/` (VHDL sources: entities, architectures, packages)
-- Tests live in: `sim/` or `tb/` (testbenches)
+- Tests live in: `sim/` (testbenches)
 - Do not modify: `work/`, `*.cf`, `*.o`, `wave.ghw` (GHDL artifacts); `impl/`, `db/`, `incremental_db/`, `output_files/` (synthesis artifacts); `.devenv/`, `.opencode/`
 
 ### Conventions specific to this repo
