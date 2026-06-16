@@ -16,6 +16,19 @@
     lint-vhdl.exec = ''
       vsg -c vsg.yml -f "$@"
     '';
+    coverage-vhdl.exec = ''
+      entity="$1"; shift
+      ghdl -a --std=08 --coverage "$@" &&
+        ghdl -e --std=08 --coverage "$entity" &&
+        ghdl -r --std=08 --coverage "$entity" &&
+        covfile=$(ls -t coverage-*.json 2>/dev/null | head -1) &&
+        if [ -n "$covfile" ]; then
+          ghdl coverage "$covfile"
+        else
+          echo "No coverage file found"
+          exit 1
+        fi
+    '';
   };
 
   languages.python = {
@@ -190,6 +203,7 @@ VHDL hardware design project with GHDL-based simulation and FPGA synthesis targe
 - Typecheck: same as lint (`ghdl -a --std=08`)
 - Test (single testbench): `ghdl -a --std=08 <rtl_files...> && ghdl -a --std=08 <tb.vhd> && ghdl -e --std=08 <tb_entity> && ghdl -r --std=08 <tb_entity>`
 - Test (with waveform): `ghdl -r --std=08 <tb_entity> --wave=wave.ghw && gtkwave wave.ghw`
+- Coverage: `coverage-vhdl <tb_entity> <rtl_files...> <tb.vhd>` (statement coverage; run on every testbench, 100% is expected for all executed lines)
 - Format: `format-vhdl <rtl_files...>`
 - Run locally: `devenv shell`
 
