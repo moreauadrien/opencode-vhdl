@@ -1,5 +1,7 @@
 .opencode
 AGENTS.md
+vsg.yml
+coverage-*
 
 # Devenv
 .devenv*
