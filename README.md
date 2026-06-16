@@ -1,48 +1,21 @@
-# opencode-vhdl
-
-Environnement de développement VHDL avec GHDL, GTKWave et support FPGA, géré via [devenv](https://devenv.sh) + Nix.
-
-## Prérequis
-
-- [Nix](https://nixos.org/download) avec flakes activés
-
-## Installation
-
+# 1. Installer WSL
 ```bash
+wsl --install
+```
+
+# 2. Installer Nix
+```bash
+sh <(curl -L https://nixos.org/nix/install) --no-daemon
+```
+
+# 3. Installer devenv
+```bash
+nix-env --install --attr devenv -f https://github.com/NixOS/nixpkgs/tarball/nixpkgs-unstable
+```
+
+# 4. Cloner le projet et entrer dans l'environnement
+```bash
+git clone https://github.com/moreauadrien/opencode-vhdl
+cd opencode-vhdl
 devenv shell
 ```
-
-## Utilisation
-
-### Analyse (lint)
-
-```bash
-ghdl -a --std=08 src/mon_module.vhd
-```
-
-### Simulation
-
-```bash
-ghdl -a --std=08 src/*.vhd tb/mon_module_tb.vhd
-ghdl -e --std=08 mon_module_tb
-ghdl -r --std=08 mon_module_tb
-```
-
-Avec forme d'onde :
-
-```bash
-ghdl -r --std=08 mon_module_tb --wave=wave.ghw
-gtkwave wave.ghw
-```
-
-## Structure
-
-```
-src/       — Sources RTL (entités, architectures, packages)
-tb/        — Bancs de test
-sim/       — Scripts de simulation alternatifs
-```
-
-## Conventions
-
-Les conventions de code (nommage, style d'import, motifs de processus, etc.) sont documentées dans [AGENTS.md](./AGENTS.md).
