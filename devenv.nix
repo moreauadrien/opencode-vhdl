@@ -800,6 +800,7 @@ output <= a when sel = '1' else b;
   };
 
   "vsg.yml".yaml = {
+    # All rules on https://vhdl-style-guide.readthedocs.io/en/latest/rules.html
     rule = {
       global = {
         indent_size = 4;  # Indente de 4 espaces
