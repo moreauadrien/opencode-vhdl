@@ -9,9 +9,23 @@
     opencode
   ];
 
+  scripts = {
+    format-vhdl.exec = ''
+      vsg -c vsg.yml --fix -f "$@"
+    '';
+    lint-vhdl.exec = ''
+      vsg -c vsg.yml -f "$@"
+    '';
+  };
+
   languages.python = {
     enable = true;
-    venv.enable = true;
+    venv = {
+      enable = true;
+      requirements = ''
+        vsg
+      '';
+    };
   };
 
   files = {
@@ -176,6 +190,7 @@ VHDL hardware design project with GHDL-based simulation and FPGA synthesis targe
 - Typecheck: same as lint (`ghdl -a --std=08`)
 - Test (single testbench): `ghdl -a --std=08 <rtl_files...> && ghdl -a --std=08 <tb.vhd> && ghdl -e --std=08 <tb_entity> && ghdl -r --std=08 <tb_entity>`
 - Test (with waveform): `ghdl -r --std=08 <tb_entity> --wave=wave.ghw && gtkwave wave.ghw`
+- Format: `format-vhdl <rtl_files...>`
 - Run locally: `devenv shell`
 
 Prefer single-file or single-test runs during iteration. Full suites are for the final verification pass.
@@ -207,7 +222,7 @@ Prefer single-file or single-test runs during iteration. Full suites are for the
 
 When the user corrects your approach, append a one-line rule here before ending the session. Write it concretely ("Always use X for Y"), never abstractly ("be careful with Y"). If an existing line already covers the correction, tighten it instead of adding a new one. Remove lines when the underlying issue goes away (model upgrades, refactors, process changes).
 
-- (empty)
+- All files managed by `devenv.nix` (in the `files` section: `AGENTS.md`, `vsg.yml`, `.opencode/skills/vhdl/SKILL.md`, etc.) must be edited exclusively through `devenv.nix` — never modify the generated files directly.
 
   '';
 
@@ -757,10 +772,107 @@ output <= a when sel = '1' else b;
 - GHDL Documentation: https://ghdl.github.io/ghdl/
 - Xilinx UG901: Vivado Synthesis Guide
 - Intel Quartus Prime Synthesis Reference
-- nandland.com — VHDL tutorials and FPGA design patterns
-- vhdlwhiz.com — VHDL best practices and synthesis guidelines
+- nandland.com -- VHDL tutorials and FPGA design patterns
+- vhdlwhiz.com -- VHDL best practices and synthesis guidelines
   '';
+
+  "opencode.json".json = {
+    formatter = {
+      vsg = {
+        command = [ "format-vhdl" "$FILE" ];
+        extensions = [ ".vhd" ];
+      };
+    };
   };
 
-
+  "vsg.yml".yaml = {
+    rule = {
+      global = {
+        indent_size = 4;  # Indente de 4 espaces
+      };
+      if_002 = {
+        parenthesis = "remove";  # Supprime les parenthèses autour des conditions if
+      };
+      when_001 = {
+        disable = true;  # Désactive la règle when_001 : on préfère le else en début de ligne
+      };
+      process_018 = {
+        action = "remove";  # N'ajoute pas de label sur end process
+      };
+      instantiation_033 = {
+        action = "remove";  # N'ajoute pas le mot-clé component sur les instanciations
+      };
+      if_024 = {
+        disable = true;  # Désactive if_024 : on garde les commentaires après 'then' sur la même ligne
+      };
+      type_010 = {
+        disable = true;  # Désactive type_010 : pas de ligne vide avant les types
+      };
+      type_011 = {
+        disable = true;  # Désactive type_011 : pas de ligne vide après les types
+      };
+      case_200 = {
+        disable = true;  # Désactive case_200 : pas de ligne vide après =>
+      };
+      instantiation_019 = {
+        disable = true;  # Désactive instantiation_019 : pas de ligne vide après les instanciations
+      };
+      generic_map_300 = {
+        disable = true;  # Désactive generic_map_300 : garde l'indent actuel des generic map
+      };
+      generic_map_301 = {
+        disable = true;  # Désactive generic_map_301 : garde l'indent actuel des generic map
+      };
+      generic_map_302 = {
+        disable = true;  # Désactive generic_map_302 : garde l'indent actuel des generic map
+      };
+      port_map_300 = {
+        disable = true;  # Désactive port_map_300 : garde l'indent actuel des port map
+      };
+      port_map_301 = {
+        disable = true;  # Désactive port_map_301 : garde l'indent actuel des port map
+      };
+      port_map_302 = {
+        disable = true;  # Désactive port_map_302 : garde l'indent actuel des port map
+      };
+      conditional_waveforms_001 = {
+        disable = true;  # Désactive conditional_waveforms_001 : le else reste sur la même ligne que la valeur
+      };
+      concurrent_009 = {
+        disable = true;  # Désactive concurrent_009 : pas d'alignement des else sur les assignations conditionnelles
+      };
+      concurrent_006 = {
+        disable = true;  # Désactive concurrent_006 : pas d'alignement auto des <= concurrents
+      };
+      process_400 = {
+        disable = true;  # Désactive process_400 : pas d'alignement auto des <= dans les process
+      };
+      # Désactive signal_007 : on garde les valeurs par défaut sur les signaux d'horloge et reset
+      signal_007 = {
+        disable = true;
+      };
+      # Désactive process_016 : les process sans label sont autorisés (ex: process de reset)
+      process_016 = {
+        disable = true;
+      };
+      # Force les constantes en MAJUSCULES (ex: T_CLK_PER, DATA_W)
+      constant_004 = {
+        case = "upper";
+      };
+      generic_007 = {
+        case = "upper";  # Force les generics en MAJUSCULES
+      };
+      type_500 = {
+        case = "upper";  # Force les valeurs d'enum en MAJUSCULES
+      };
+      type_600 = {
+        disable = false;
+        suffix = "_t";
+      };
+      length_001 = {
+        disable = true;  # Désactive length_001 : on garde les lignes > 120 caractères
+      };
+    };
+  };
+};
 }
