@@ -19,3 +19,9 @@ git clone https://github.com/moreauadrien/opencode-vhdl
 cd opencode-vhdl
 devenv shell
 ```
+
+# 4. (bis) Cloner le projet dans le répertoire local et entrer dans l'environnement
+```bash
+git clone https://github.com/moreauadrien/opencode-vhdl .
+devenv shell
+```
